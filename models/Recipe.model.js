@@ -4,10 +4,29 @@ const { Schema, model } = mongoose;
 const recipeSchema = new Schema({
   title: String,
   description: String,
+  image: String,
+  servings: Number,
   ingredients:[String],
   cookingAdvice: String,
   user: { type: Schema.Types.ObjectId, ref: 'User' }, //or "owner/author"
-  posts: [{ type: Schema.Types.ObjectId, ref: 'Post' }]
-});
+  posts: [{ type: Schema.Types.ObjectId, ref: 'Post' }] //comments to the recipe by other users
+
+  //later
+  //likes: { type: Schema.Types.ObjectId, ref: 'User' } 
+          //users who liked this recipe (to avoid a user gives 100 likes)
+
+  //-->bookmarks will be in the user, here no sense
+
+},{ timestamps: true }); //to show date of creation
 
 module.exports = model('Recipe', recipeSchema);
+
+
+// --->think later aggain
+// comment: i think i will keep the user entry in the recipe.model,
+// thinking of having 30 recipes in the database and for every recipe
+// i want to show the the author , so 
+// i would to have to filter by iterate through every user, recipes[] in user
+// ->exponential work for the client-side
+// ->less work for db
+// ->to check owner also have to filter through whole user collection

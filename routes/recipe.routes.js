@@ -6,18 +6,8 @@ const { isAuthenticated } = require("../middleware/jwt.middleware")
 
 const Recipe = require('../models/Recipe.model');
 const Post = require('../models/Post.model');
-
-
-
-//READ list all Recipes 
-router.get('/recipes', (req, res, next) => {
-    Recipe.find()
-      //  .populate("posts")
-        .then(allRecipes => {
-            res.json(allRecipes)
-        })
-        .catch(err => res.json(err));
-});
+const User = require("../models/User.model");
+const { response } = require("express");
 
 
 //CREATE new recipe
@@ -25,10 +15,24 @@ router.post('/recipes', isAuthenticated, (req, res, next) => {
     const { title, description, user } = req.body; //, req.body.user is just the user._id
 
     Recipe.create({ title, description, user }) //, posts: [] ->no posts on create
-        .then(response => res.json(response))
+        .then(response => {
+            // const newRecipeId = response._id
+            // User.findByIdAndUpdate(user, {$push: {"recipes": newRecipeId}}) //add the new recipe to the user.recipes[]
+            // .then()
+            res.json(response)
+        })
         .catch(err => res.json(err));
 });
 
+//READ list all Recipes 
+router.get('/recipes', (req, res, next) => {
+    Recipe.find()
+        //  .populate("posts")
+        .then(allRecipes => {
+            res.json(allRecipes)
+        })
+        .catch(err => res.json(err));
+});
 
 
 //READ recipe details
@@ -40,8 +44,8 @@ router.get('/recipes/:recipeId', (req, res, next) => {
         return;
     }
 
-    // Each Recipe document has `tasks` array holding `_id`s of Task documents
-    // We use .populate() method to get swap the `_id`s for the actual Task documents
+    // Each Recipe document has `posts` array holding `_id`s of Post documents
+    // We use .populate() method to get swap the `_id`s for the actual Post documents
     Recipe.findById(recipeId)
         .populate('posts')
         .then(recipe => res.json(recipe))
