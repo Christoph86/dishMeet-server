@@ -1,24 +1,33 @@
 const router = require("express").Router();
-
 const mongoose = require('mongoose');
 
 const { isAuthenticated } = require("../middleware/jwt.middleware")
 
 const Recipe = require('../models/Recipe.model');
 const Post = require('../models/Post.model');
-const User = require("../models/User.model");
-const { response } = require("express");
+//const { response } = require("express");
 
 
 //CREATE new recipe
 router.post('/recipes', isAuthenticated, (req, res, next) => {
-    const { title, description, user } = req.body; //, req.body.user is just the user._id
+    const { 
+        title, 
+        description, 
+        image,
+        servings,
+        ingredients,
+        cookingAdvice,
+        user } = req.body; //, req.body.user is just the user._id
 
-    Recipe.create({ title, description, user }) //, posts: [] ->no posts on create
+    Recipe.create({ 
+        title, 
+        description,
+        image,
+        servings,
+        ingredients,
+        cookingAdvice,
+        user })
         .then(response => {
-            // const newRecipeId = response._id
-            // User.findByIdAndUpdate(user, {$push: {"recipes": newRecipeId}}) //add the new recipe to the user.recipes[]
-            // .then()
             res.json(response)
         })
         .catch(err => res.json(err));
