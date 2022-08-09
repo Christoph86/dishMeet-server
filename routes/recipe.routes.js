@@ -37,7 +37,7 @@ router.post('/recipes', isAuthenticated, (req, res, next) => {
 //READ list all Recipes 
 router.get('/recipes', (req, res, next) => {
     Recipe.find()
-        //  .populate("posts")
+        .populate("user")
         .then(allRecipes => {
             res.json(allRecipes)
         })
@@ -57,11 +57,11 @@ router.get('/recipes/:recipeId', (req, res, next) => {
     // Each Recipe document has `posts` array holding `_id`s of Post documents
     // We use .populate() method to get swap the `_id`s for the actual Post documents
     Recipe.findById(recipeId)
+        .populate("user")
         .populate('posts')
         .then(recipe => res.json(recipe))
         .catch(error => res.json(error));
 });
-
 
 
 //UPDATE recipe -->req.body does not contain user._id (owner/author), would not be changed
