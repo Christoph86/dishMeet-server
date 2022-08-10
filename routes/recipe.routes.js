@@ -84,6 +84,19 @@ router.put('/recipes/:recipeId', isAuthenticated, (req, res, next) => {
         .catch(error => res.json(error))
 });
 
+//UPDATE recipe.likes -checks if authenticated, but don't check if author
+router.put('/recipes/:recipeId/likes', isAuthenticated, (req, res, next) => {
+    const { recipeId } = req.params;
+    if (!mongoose.Types.ObjectId.isValid(recipeId)) {
+        res.status(400).json({ message: 'Specified id is not valid' });
+        return;
+    }
+
+    Recipe.findByIdAndUpdate(recipeId, req.body, { returnDocument: 'after' })
+    .then((updatedRecipe) => res.json(updatedRecipe))
+    .catch(error => res.json(error));
+});
+
 
 //DELETE recipe
 router.delete('/recipes/:recipeId', isAuthenticated, (req, res, next) => {
